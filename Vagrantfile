@@ -133,7 +133,10 @@ EOF
   cd /home/vagrant/hellobackend
   mvn clean install
 
-  sudo java -jar /home/vagrant/hellobackend/target/hellobackend-0.0.1-SNAPSHOT.jar
+  sudo cp /home/vagrant/hellobackend/hellobackend.service /etc/systemd/system
+  sudo systemctl daemon-reload
+  sudo systemctl enable hellobackend
+  sudo systemctl start hellobackend
 
   echo "--------------------> VM successfully launched!"
   SHELL

@@ -1,0 +1,10 @@
+[Unit]
+Description=Asanpay terminal daemon
+After=syslog.target network.target
+
+[Service]
+Type=forking
+ExecStart=/bin/sh -c 'java -jar /home/vagrant/hellobackend/target/hellobackend-0.0.1-SNAPSHOT.jar'
+
+[Install]
+WantedBy=multi-user.target
