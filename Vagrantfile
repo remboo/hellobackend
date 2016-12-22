@@ -34,15 +34,23 @@ Vagrant.configure(2) do |config|
 
   # Enable provisioning with a shell script
   config.vm.provision "shell", inline: <<-SHELL
- 
-  echo "--------------------> updating applications..."
-  sudo apt-get update
 
   echo "--------------------> setting locales..."
   sudo echo “LANG=en_US.UTF-8” >> /etc/environment
   sudo echo “LANGUAGE=en_US.UTF-8” >> /etc/environment
   sudo echo “LC_ALL=en_US.UTF-8” >> /etc/environment
   sudo echo “LC_CTYPE=en_US.UTF-8” >> /etc/environment
+  
+  echo "--------------------> installing JDK 8..."
+  sudo add-apt-repository -y ppa:webupd8team/java
+  sudo apt-get update
+  sudo apt-get -y upgrade
+  echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections 
+  echo debconf shared/accepted-oracle-license-v1-1 seen true | sudo debconf-set-selections
+  sudo apt-get install -y oracle-java8-installer
+
+  echo "--------------------> setting environment variables for JDK 8..."
+  sudo apt-get install -y oracle-java8-set-default
 
   echo "--------------------> installing postgres..." 
   sudo vim /etc/apt/sources.list.d/postgresql.list
@@ -104,21 +112,16 @@ EOF
     (2, 'rabbit'),
     (3, 'rat'),
     (4, 'dog'),
-    (5, 'mouse');"
+    (5, 'truck'),
+    (6, 'hello'),
+    (7, 'trust'),
+    (8, 'space'),
+    (9, 'construct'),
+    (10, 'future');"
 
   echo "--------------------> restarting postgresql..."
   sudo service postgresql restart
   echo "--------------------> postgresql restarted!"
-
-  echo "--------------------> installing JDK 8..."
-  sudo apt-get install -y python-software-properties
-  echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
-  sudo add-apt-repository -y ppa:webupd8team/java
-  sudo apt-get update
-  sudo apt-get install -y oracle-java8-installer
-
-  echo "--------------------> setting environment variables for JDK 8..."
-  sudo apt-get install -y oracle-java8-set-default
 
   echo "--------------------> installing Maven..."
   sudo apt-get install -y maven
