@@ -2,9 +2,8 @@ package com.johnremboo.repositories;
 
 import com.johnremboo.entities.Contact;
 import com.johnremboo.utils.HibernateSession;
-import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -18,9 +17,8 @@ public class ContactsRepository {
 
     public List findByNameRegex(String filter) {
         try (Session currentSession = session.getSession()) {
-            Criteria criteria = currentSession.createCriteria(Contact.class);
-            criteria.add(Restrictions.sqlRestriction("name ~ '^(?!" + filter + ")'"));
-            return criteria.list();
+            Query query = currentSession.createQuery("from Contact c where regexp(c.name, \'" + filter + "\') = false");
+            return query.list();
         }
     }
 
@@ -29,7 +27,5 @@ public class ContactsRepository {
             currentSession.save(contact);
         }
     }
-
-
 }
 

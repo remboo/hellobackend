@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 @RestController
 public class ContactsController {
@@ -23,6 +25,14 @@ public class ContactsController {
 
     @RequestMapping(value="/contacts",produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
     public ResponseEntity findByNameRegex(@RequestParam("nameFilter") String filter) {
+
+        try {
+            Pattern.compile(filter);
+        } catch (PatternSyntaxException e) {
+            logger.info("Invalid regex: " + filter);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid regex: " + filter);
+        }
+
         List contacts = contactService.findByNameRegex(filter);
 
         if(contacts != null && contacts.size() > 0) {
